@@ -22,7 +22,7 @@ def getrssilist(k):
     # 返回信号前k强
 
 #在totaltime内，每隔second秒获取信号前k强的数据并加入到字典中 格式：bssid:[rssi列表]
-def get_rssi_time(totaltime,second,k):
+def get_rssi_time(totaltime,second,k=-1):
     print("start get")
     start=time.clock()
     result = {}
@@ -54,15 +54,22 @@ def gaussian(rssilist):
     aftergaussianmean = np.mean(aftergaussian)
     return round(aftergaussianmean,2)
 
-#返回数据预处理后的特征:测试总时间，每次测试时间间隔，取前k个信号最强的wifi
-def data_proced(totaltime,second,k,i,j):
+#返回数据预处理后的特征:测试总时间，每次测试时间间隔，取前k个信号最强的wifi。由于默认取所有可测得的数据故k默认取-1
+# 离线阶段的数据采集
+def data_proced(filename,totaltime,second,i,j,k=-1):
     result = {}
     for key,value in get_rssi_time(totaltime,second,k).items():
         result[key] = gaussian(value)
-    file = open('result.txt','a+')
+    file = open('{}.txt'.format(filename),'a+')
     file.write('({},{}):\n'.format(i,j))
     file.write(str(result))
     file.write('\n')
+
+def data_procedonline(totaltime,second,k=-1):
+    result = {}
+    for key,value in get_rssi_time(totaltime,second,k).items():
+        result[key] = gaussian(value)
+    return result
 
 if __name__ == '__main__':
     #data_proced(5,0.5,20,0,1)
