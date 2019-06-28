@@ -61,18 +61,23 @@ def data_proced(filename,totaltime,second,i,j,k=-1):
     for key,value in get_rssi_time(totaltime,second,k).items():
         result[key] = gaussian(value)
     file = open('{}.txt'.format(filename),'a+')
-    file.write('({},{}):\n'.format(i,j))
+    file.write('({},{})：\n'.format(i,j))
     file.write(str(result))
     file.write('\n')
 
 def data_procedonline(totaltime,second,k=-1):
+    '''
+    :param totaltime: 在线获取时间
+    :param second: 频率
+    :param k:
+    :return: 返回当前所有wifi数据的字典格式：  mac：信号强度
+    '''
     result = {}
     for key,value in get_rssi_time(totaltime,second,k).items():
+        key = key.strip(':')
         result[key] = gaussian(value)
     return result
 
 if __name__ == '__main__':
-    #data_proced(5,0.5,20,0,1)
-    i = 0
-    for key, value in get_rssi_time(30, 1, -1).items():
-        print(i,"--", key," : ",value )
+    print(data_procedonline(10,0.5,-1))
+
