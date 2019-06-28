@@ -54,7 +54,7 @@ def classifyknn(Inx,dataset,labels,k):
     return esx,esy
 
 
-def classifywknn(Inx,dataset,labels,k=3):
+def classifywknn(Inx, dataset, labels, k=3):
     '''
 
     :param Inx: 测试数据
@@ -63,27 +63,20 @@ def classifywknn(Inx,dataset,labels,k=3):
     :param k: 取距离最小的前k个
     :return: 对1/d进行加权之后的地点标签
     '''
-    labels = labels.copy()
-    #计算距离
-    datasize=dataset.shape[0]
-    copyInx=np.tile(Inx,(datasize,1))-dataset
-    Inxsquare=copyInx**2
-    Inxsquaresum=Inxsquare.sum(axis=1)
-    d=Inxsquaresum**0.5
+ 
+
+    data_now = np.array(Inx)
+    d = np.sum((dataset - data_now)**2, axis=1)**0.5
+    
     # print('dshape{}'.format(d.shape))
-    minindex=d.argsort()  # 返回距离从小到大的标签
+    minindex = d.argsort()  # 返回距离从小到大的标签
     #k临近
-    esx = 0
-    esy = 0
-    dtotal = 0
-    for i in range(k):
-        if d[minindex[i]] !=0:
-            dtotal += 1 / d[minindex[i]]
-    for i in range(k):
-        if d[minindex[i]] != 0:
-            esx += labels[minindex[i]][0] * (1 / d[minindex[i]]) / dtotal
-            esy += labels[minindex[i]][1] * (1 / d[minindex[i]]) / dtotal
-    return esx,esy
+    dtotal = np.sum(1/d[minindex[0:k]])
+
+    minlabel = labels[minindex[0:k]]
+    ratio = (1/d[minindex[0:k]])/dtotal
+
+    return ratio.dot(minlabel)
 
 
 
