@@ -4,33 +4,30 @@ import os
 import time
 import numpy as np
 
-def getrssilist(k):
+def getrssilist():
     # 选择网卡
     wifi = pywifi.PyWiFi()
     iface = wifi.interfaces()[0]
     iface.scan()
     result = iface.scan_results() # 扫描结果
     needresult = {}
-
     for i in range(len(result)):
         # needresult[(result[i].ssid, result[i].bssid)] = result[i].signal # 创建扫描结果字典（ssid，bssid）：信号强度
         needresult[result[i].bssid] = result[i].signal  # 创建扫描结果字典bssid：信号强度
 
-    # 根据rssi强度由高到低排序
-    finalresult = sorted(needresult.items(), key=lambda item: item[1], reverse=True)
-    return finalresult[:k]
+    return needresult
     # 返回信号前k强
 
 #在totaltime内，每隔second秒获取信号前k强的数据并加入到字典中 格式：bssid:[rssi列表]
-def get_rssi_time(totaltime,second,k=-1):
+def get_rssi_time(totaltime,second):
     print("start get")
     start=time.clock()
     result = {}
     while 1:
         time.sleep(second)
-        data_now = getrssilist(k)
-        for data in data_now:
-            result[data[0]]=result.get(data[0],[])+[data[1]]
+        data_now = getrssilist()
+        for wifi,rssi in data_now.items():
+            result[wifi]=result.get(wifi,[])+[rssi]
         end = time.clock()
         if int(end - start) == totaltime:
             break
@@ -56,16 +53,16 @@ def gaussian(rssilist):
 
 #返回数据预处理后的特征:测试总时间，每次测试时间间隔，取前k个信号最强的wifi。由于默认取所有可测得的数据故k默认取-1
 # 离线阶段的数据采集
-def data_proced(filename,totaltime,second,i,j,k=-1):
+def data_proced(filename,totaltime,second,i,j):
     result = {}
-    for key,value in get_rssi_time(totaltime,second,k).items():
+    for key,value in get_rssi_time(totaltime,second).items():
         result[key] = gaussian(value)
     file = open('{}.txt'.format(filename),'a+')
     file.write('({},{})：\n'.format(i,j))
     file.write(str(result))
     file.write('\n')
 
-def data_proced_online(totaltime,second,k=-1):
+def data_proced_online(totaltime,second):
     '''
     :param totaltime: 在线获取时间
     :param second: 频率
@@ -73,14 +70,14 @@ def data_proced_online(totaltime,second,k=-1):
     :return: 返回当前所有wifi数据的字典格式：  mac：信号强度
     '''
     result = {}
-    for key,value in get_rssi_time(totaltime,second,k).items():
+    for key,value in get_rssi_time(totaltime,second).items():
         key = key.strip(':')
         result[key] = gaussian(value)
     return result
 
 
 # 在线获取wifi特征向量
-def get_data_online(totaltime=2,second = 0.5,k = -1):
+def get_data_online(totaltime=2,second = 0.5):
     '''
     :param totaltime:测试总时间，（由于人的运动，故每个点的测试总时间无法过长）
     :param second:测试频率
@@ -92,7 +89,7 @@ def get_data_online(totaltime=2,second = 0.5,k = -1):
 '80:b5:75:77:4c:a1', '06:69:6c:86:d8:11', '04:25:c5:b4:bc:a1', '80:b5:75:77:2d:c1', '00:12:5f:11:7d:10', '06:69:6c:86:d8:12', '80:b5:75:77:2e:e1', '80:b5:75:77:81:41', '80:b5:75:77:31:c1', '06:69:6c:86:d8:7f', '04:25:c5:b4:bf:a1', '00:12:5f:11:9c:2a', '04:25:c5:b4:bf:a0', '04:25:c5:b4:b2:c1', '80:b5:75:77:81:a1', '00:06:f4:e3:76:a0', '04:25:c5:b4:b3:20', '30:49:3b:08:2d:7e', 'd8:c8:e9:06:4c:68', '00:12:5f:11:8f:7c', '8c:ab:8e:ee:e0:40', '04:25:c5:b4:b3:21', '00:22:6b:59:72:1f', '80:b5:75:77:2f:a0', '80:b5:75:77:2f:a1', '04:25:c5:b4:cd:20', '00:16:b6:25:28:03', 'f4:83:cd:9f:e7:bc', '00:06:f4:e3:76:a1', '06:69:6c:86:db:1e', '00:12:5f:10:e7:cc', '04:25:c5:b4:cd:60', '04:25:c5:b4:cd:61', '00:12:5f:0b:b4:d8', '00:06:f4:e3:77:01', '00:06:f4:e3:77:00', '00:12:5f:10:e8:80', '52:8f:4c:6d:e2:9a', '04:25:c5:b4:b2:91', '04:25:c5:b4:b2:90', '04:25:c5:b4:cf:90', '04:25:c5:b4:cf:91', '80:b5:75:77:4c:b0', '80:b5:75:77:4c:b1', '80:b5:75:77:2d:d0', '80:b5:75:77:2d:d1', '80:b5:75:77:31:d0', '80:b5:75:77:31:d1', '80:b5:75:77:31:df', '04:25:c5:b4:bc:b0', '60:0b:03:01:4c:c0', '04:25:c5:b4:b2:d0', '60:0b:03:01:4c:c1', '60:0b:03:01:4c:c2', '80:b5:75:77:5c:71', '80:b5:75:77:5c:70', '80:b5:75:77:5c:7f', '04:25:c5:b4:bc:b1', '04:25:c5:b4:b2:d1', 'ec:88:8f:63:55:a0']
     # 线上获取 初始化
     onlinelist = [-999]*len(wifilist)
-    onlineinfo = data_proced_online(totaltime,second,k)
+    onlineinfo = data_proced_online(totaltime,second)
     onlinewifilist = list(onlineinfo.keys())  # 实时获取wifi列表
     for onlinewifi in onlinewifilist:
           # 将实时获取的WiFi强度对应添加到实时数据表钟
@@ -103,5 +100,9 @@ def get_data_online(totaltime=2,second = 0.5,k = -1):
     return onlinelist
 
 if __name__ == '__main__':
-    print(data_procedonline(10,0.5,-1))
+    # print(getrssilist())
+    # print(get_rssi_time(3,0.3))
+    # print(get_data_online(10,0.5,-1))
+    # print(data_proced_online(2,0.5))
+    print(get_data_online(2,0.5))
 
