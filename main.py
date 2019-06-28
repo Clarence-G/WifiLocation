@@ -17,7 +17,7 @@ coordinate = [[],[]]
 
 for i in range(100):
 
-    data_now = classify.dataproconline()
+    data_now = get_rssi.get_data_online()
     x, y = classify.classifywknn(data_now,dataset,labellist,k=3)
     coordinate[0].append(x)
     coordinate[1].append(y)
