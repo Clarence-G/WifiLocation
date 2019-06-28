@@ -17,12 +17,12 @@ def plot_durations(coordinate):
         c=point_numbers, cmap=plt.cm.Blues, marker='x')
     
     plt.pause(0.5) # pause a bit so that plots are updated
-
-coordinate = [[],[]]
-x, y = 0, 0
-for i in range(100):
-    x = x + 4*np.random.rand()/50
-    y = y + 5*np.random.rand()/50
-    coordinate[0].append(x)
-    coordinate[1].append(y)
-    plot_durations(coordinate)
+if __name__ == '__main__':
+    coordinate = [[],[]]
+    x, y = 0, 0
+    for i in range(100):
+        x = x + 4*np.random.rand()/50
+        y = y + 5*np.random.rand()/50
+        coordinate[0].append(x)
+        coordinate[1].append(y)
+        plot_durations(coordinate)

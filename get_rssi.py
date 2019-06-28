@@ -68,6 +68,7 @@ def data_proced(filename,totaltime,second,i,j,k=-1):
 def data_procedonline(totaltime,second,k=-1):
     result = {}
     for key,value in get_rssi_time(totaltime,second,k).items():
+        key = key.strip(':')
         result[key] = gaussian(value)
     return result
 
