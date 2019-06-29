@@ -14,11 +14,10 @@ def getrssilist():
     for i in range(len(result)):
         # needresult[(result[i].ssid, result[i].bssid)] = result[i].signal # 创建扫描结果字典（ssid，bssid）：信号强度
         needresult[result[i].bssid] = result[i].signal  # 创建扫描结果字典bssid：信号强度
-
     return needresult
     # 返回信号前k强
 
-#在totaltime内，每隔second秒获取信号前k强的数据并加入到字典中 格式：bssid:[rssi列表]
+# 在totaltime内，每隔second秒获取信号前k强的数据并加入到字典中 格式：bssid:[rssi列表]
 def get_rssi_time(totaltime,second):
     print("start get")
     start=time.clock()
