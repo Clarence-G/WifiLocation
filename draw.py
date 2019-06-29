@@ -1,5 +1,3 @@
-import math
-import random
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -15,8 +13,8 @@ def plot_durations(coordinate):
     plt.title('FR\'s face')
     plt.scatter(coordinate[0], coordinate[1],\
         c=point_numbers, cmap=plt.cm.Blues, marker='x')
-    
-    plt.pause(0.5) # pause a bit so that plots are updated
+    plt.pause(0.1) # pause a bit so that plots are updated
+
 if __name__ == '__main__':
     coordinate = [[],[]]
     x, y = 0, 0
