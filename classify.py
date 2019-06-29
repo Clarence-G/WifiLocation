@@ -78,6 +78,11 @@ def classifywknn(Inx, dataset, labels, k=3):
 
     return ratio.dot(minlabel)
 
-
+def sf_wknn(Inx, dataset, labels,n, k=3):
+    sortindex = np.array(Inx).argsort().tolist()
+    sortindex.reverse()  
+    newInx = np.array(Inx)[sortindex[:n]]
+    newdataset = dataset[:,sortindex[:n]]
+    return classifywknn(newInx, newdataset, labels, k)
 
 
