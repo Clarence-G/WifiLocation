@@ -1,16 +1,14 @@
 # 本地测试文件
 import get_rssi
 import classify
-import numpy as np
 import draw
+import numpy as np
 
-dataset = np.load('./data/dataset.npy')
-labels = np.load('./labels.npy')
-
-#result = get_rssi.data_procedonline(10, 1)
+dataset = np.load('./data/dataset.npy') # 测试数据
+labels = np.load('./data/labels.npy') # 地点坐标
 
 
-coordinate = [[],[]]
+coordinate = [[],[]] # 画图数据
 
 for i in range(100):
 
