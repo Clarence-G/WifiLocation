@@ -5,12 +5,12 @@ f = open(filename)
 print('Open Sussessfuly')
 
 nan = -999.
-
+big = 1000
 l = []
 Macadd = []
 num = 0
 dictep = dict()
-dataset = np.full(shape=(30, 83), fill_value=nan)
+dataset = np.full(shape=(big, big), fill_value=nan)
 
 for line in f.readlines():
     line = line.strip('\n:')
@@ -27,7 +27,8 @@ for line in f.readlines():
             
             dataset[num//2-1][Macadd.index(key)] = value
 
-
+dataset = dataset[:len(l), :len(Macadd)]
 np.save('data/dataset.npy', dataset)
 print(Macadd)
 print(l)
+print(dataset.shape)
