@@ -1,3 +1,5 @@
+import numpy as np
+import classify
 def validate(method,truth,data,labellist,k,m):
     '''
     :param method: 判别方法，nn，knn，wknn
@@ -29,6 +31,6 @@ if __name__=='__main__':
     # print(labellist)
     for truth in range(len(data)):
         print('the truth is {}'.format(labellist[truth]))
-        validate(classifynn,truth,data,labellist,3,50)
-        validate(classifyknn, truth, data, labellist,3,50)
-        validate(classifywknn, truth, data,labellist, 3,50)
+        validate(classify.classifynn,truth,data,labellist,3,50)
+        validate(classify.classifyknn, truth, data, labellist,3,50)
+        validate(classify.classifywknn, truth, data,labellist, 3,50)
